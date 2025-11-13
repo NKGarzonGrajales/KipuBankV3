@@ -49,6 +49,8 @@ hasRole(bytes32,address)              // Verificar rol
 rescueETH(uint256,address)            // Rescate de fondos ETH
 rescueERC20(address,uint256,address)  // Rescate de tokens ERC20
 
+---
+
 🧠 Roles Implementados
 
 -DEFAULT_ADMIN_ROLE → Control total del contrato.
@@ -57,6 +59,8 @@ rescueERC20(address,uint256,address)  // Rescate de tokens ERC20
 
 -ORACLE_DECIMALS → Parámetro de precisión (8).
 
+---
+
 👥 Roles y Cuentas Utilizadas
 
 | Tipo                              | Dirección                                    | Descripción                                                              |
@@ -64,12 +68,13 @@ rescueERC20(address,uint256,address)  // Rescate de tokens ERC20
 | **Cuenta A (Admin / Deployer)**   | `0xEFCD678F3E8Ba831787b6eb41ea8A618674B1dd8` | Desplegó el contrato y tiene el rol `DEFAULT_ADMIN_ROLE`.                |
 | **Cuenta B (Usuario autorizado)** | `0xc89edce46B30416268E33fb181616f3f90580d71` | Recibió `BANK_ADMIN_ROLE` para pruebas de depósitos, retiros y rescates. |
 
-
+---
 Roles principales:
 
 -DEFAULT_ADMIN_ROLE → Acceso total.
 
 -BANK_ADMIN_ROLE → Gestión de operaciones del banco.
+---
 
 💵 Tokens Mock Vinculados
 | Token        | Dirección                                    | Descripción                                                     |
@@ -77,7 +82,9 @@ Roles principales:
 | **MockUSDC** | `0xCF27A9f700835895648EA5EfA6914074557c7b80` | Token ERC20 simulado para pruebas de depósito y retiro.         |
 | **MockDAI**  | `0xbBf03149d20B205000c048308CF2d17c2341BfF7` | Token ERC20 simulado compatible con las funciones del contrato. |
 
+---
 🧪 Pruebas Realizadas
+
 🔹 Asignación de Roles
 
 .Desde la cuenta A, se ejecutó grantRole() para otorgar BANK_ADMIN_ROLE a la cuenta B.
@@ -106,6 +113,8 @@ Roles principales:
 
 .Transacción confirmada sin pérdida de fondos de usuario.
 
+---
+
 📊 Resultados en Etherscan
 
 -totalDepositedPerToken(MockUSDC) → 1000000000000000000
@@ -116,14 +125,17 @@ Roles principales:
 
 -rescueETH() → Ejecución confirmada (block 9615136)
 
+---
+
 🔗 Contratos Verificados
 
 | Contrato                   | Red     | Dirección                                                                                                                                                          |
 | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **KipuBankV3 (Principal)** | Sepolia | [https://sepolia.etherscan.io/address/0xd8d9e6a133981b9789849075c89dbe30a0bf05f1](https://sepolia.etherscan.io/address/0xd8d9e6a133981b9789849075c89dbe30a0bf05f1) |
-| **MockUSDC**               | Sepolia | [https://sepolia.etherscan.io/address/0xCF27A9f700835895648EA5EfA6914074557c7b80](https://sepolia.etherscan.io/address/0xCF27A9f700835895648EA5EfA6914074557c7b80) |
-| **MockDAI**                | Sepolia | [https://sepolia.etherscan.io/address/0xbBf03149d20B205000c048308CF2d17c2341BfF7](https://sepolia.etherscan.io/address/0xbBf03149d20B205000c048308CF2d17c2341BfF7) |
+| **KipuBankV3 (Principal)** | Sepolia | (https://sepolia.etherscan.io/address/0xd8d9e6a133981b9789849075c89dbe30a0bf05f1) |
+| **MockUSDC**               | Sepolia | (https://sepolia.etherscan.io/address/0xCF27A9f700835895648EA5EfA6914074557c7b80) |
+| **MockDAI**                | Sepolia | (https://sepolia.etherscan.io/address/0xbBf03149d20B205000c048308CF2d17c2341BfF7) |
 
+---
 
 🧱 Decisiones Técnicas
 
@@ -137,6 +149,7 @@ Roles principales:
 
 .Gas optimizado y versión EVM Shanghai.
 
+---
 
 🛠️ Herramientas Utilizadas
 
@@ -149,6 +162,8 @@ Etherscan Verification (JSON Input)
 OpenZeppelin Contracts 5.x
 
 Chainlink Price Feeds
+
+---
 
 👩‍💻 Autora
 
