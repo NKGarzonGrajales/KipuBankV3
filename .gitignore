@@ -1,0 +1,48 @@
+# -------------------------
+# Node & Package Files
+# -------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# -------------------------
+# Hardhat / Foundry / Truffle Artifacts
+# -------------------------
+artifacts/
+cache/
+out/
+
+# -------------------------
+# Environment Variables
+# -------------------------
+.env
+.env.local
+.env.*.local
+
+# -------------------------
+# Remix Compiler Outputs
+# -------------------------
+*.abi
+*.bin
+*.json
+*.dbg.json
+
+# -------------------------
+# VS Code
+# -------------------------
+.vscode/
+.history/
+
+# -------------------------
+# System Files
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Backup Files
+# -------------------------
+*.swp
+*.swo
+*~
+
