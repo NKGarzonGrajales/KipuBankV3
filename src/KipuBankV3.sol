@@ -4,19 +4,30 @@ pragma solidity ^0.8.24;
 /**
  * @title KipuBankV3
  * @author N.K.G.G.
- * @notice Project for ETH Kipu — Module 4 (Upgraded Bank/Vault)
- * @dev Beginner-friendly implementation where I focus on:
- *      - ETH and ERC-20 deposits/withdrawals (multi-token vault)
- *      - Simple admin using Ownable (just one owner for now)
- *      - Caps: global (bank cap) and per-tx withdraw cap, per token
- *      - Chainlink ETH/USD oracle to enforce a USD cap for ETH TVL
- *      - CEI (Checks-Effects-Interactions) and SafeERC20 usage
- *      - Custom errors and events for clear testing on Etherscan
-        
+ * @notice Project for ETH Kipu — Module 4 (Advanced Upgraded Bank/Vault)
+ *
+ * @dev This version extends KipuBankV2 by incorporating full role-based access
+ *      control, multi-token support, Chainlink oracle integration, improved
+ *      security patterns, and a more realistic banking architecture.
+ *
+ * Key features implemented:
+ *  - Native ETH and ERC20 deposits/withdrawals (multi-asset vault)
+ *  - Role system using OpenZeppelin AccessControl:
+ *        • DEFAULT_ADMIN_ROLE (full control)
+ *        • BANK_ADMIN_ROLE (operational management)
+ *  - Oracle integration (Chainlink ETH/USD price feed)
+ *  - Global bank caps and per-transaction withdrawal limits (per token)
+ *  - Reentrancy protection via ReentrancyGuard
+ *  - Safe token operations using SafeERC20
+ *  - Custom errors and detailed events for gas optimization and clear tracking
+ *  - Emergency rescue functions for ETH and ERC20 (restricted to admin roles)
  *
  * Learning notes:
- * - I wrote comments to help myself (and reviewers) follow each step.
- * - address(0) represents native ETH inside mappings and events.
+ *  - This version was fully tested using two accounts (Admin + Bank Admin)
+ *    on Sepolia testnet through Remix IDE and MetaMask.
+ *  - The contract was verified publicly on Etherscan using Standard JSON Input.
+ *  - Comments have been added intentionally to make each design decision explicit.
+ *  - address(0) continues to represent native ETH in all mappings and events.
  */
 
 import "@openzeppelin/contracts/access/Ownable.sol";
