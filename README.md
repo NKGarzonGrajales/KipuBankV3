@@ -57,7 +57,7 @@ rescueERC20(address,uint256,address)  // Rescate de tokens ERC20
 
 -ORACLE_DECIMALS → Parámetro de precisión (8).
 
-<h2 align="center">👥 Roles y Cuentas Utilizadas</h2>
+👥 Roles y Cuentas Utilizadas
 
 | Tipo                              | Dirección                                    | Descripción                                                              |
 | --------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------ |
@@ -67,46 +67,46 @@ rescueERC20(address,uint256,address)  // Rescate de tokens ERC20
 
 Roles principales:
 
-DEFAULT_ADMIN_ROLE → Acceso total.
+-DEFAULT_ADMIN_ROLE → Acceso total.
 
-BANK_ADMIN_ROLE → Gestión de operaciones del banco.
+-BANK_ADMIN_ROLE → Gestión de operaciones del banco.
 
-<h2 align="center">💵 Tokens Mock Vinculados</h2>
+💵 Tokens Mock Vinculados
 | Token        | Dirección                                    | Descripción                                                     |
 | ------------ | -------------------------------------------- | --------------------------------------------------------------- |
 | **MockUSDC** | `0xCF27A9f700835895648EA5EfA6914074557c7b80` | Token ERC20 simulado para pruebas de depósito y retiro.         |
 | **MockDAI**  | `0xbBf03149d20B205000c048308CF2d17c2341BfF7` | Token ERC20 simulado compatible con las funciones del contrato. |
 
-<h2 align="center">🧪 Pruebas Realizadas</h2>
+🧪 Pruebas Realizadas
 🔹 Asignación de Roles
 
-Desde la cuenta A, se ejecutó grantRole() para otorgar BANK_ADMIN_ROLE a la cuenta B.
+.Desde la cuenta A, se ejecutó grantRole() para otorgar BANK_ADMIN_ROLE a la cuenta B.
 
-Confirmado con hasRole() → Resultado: true.
+.Confirmado con hasRole() → Resultado: true.
 
 🔹 Depósitos
 
-Se ejecutó depositETH() desde la cuenta B.
+.Se ejecutó depositETH() desde la cuenta B.
 
-Resultado visible en Etherscan: transacción confirmada.
+.Resultado visible en Etherscan: transacción confirmada.
 
-Valor validado con totalDepositedPerToken(address) = 1000000000000000000.
+.Valor validado con totalDepositedPerToken(address) = 1000000000000000000.
 
-Se realizaron depósitos con MockDAI y MockUSDC, con allowance previa aprobada.
+.Se realizaron depósitos con MockDAI y MockUSDC, con allowance previa aprobada.
 
 🔹 Retiros
 
-La cuenta B realizó withdrawETH() y withdrawToken() sin errores.
+.La cuenta B realizó withdrawETH() y withdrawToken() sin errores.
 
-Los valores se actualizaron correctamente en el balance del contrato.
+.Los valores se actualizaron correctamente en el balance del contrato.
 
 🔹 Funciones de rescate (Admin)
 
-Desde la cuenta A, se probó rescueETH() con éxito.
+.Desde la cuenta A, se probó rescueETH() con éxito.
 
-Transacción confirmada sin pérdida de fondos de usuario.
+.Transacción confirmada sin pérdida de fondos de usuario.
 
-<h2 align="center">📊 Resultados en Etherscan</h2>
+📊 Resultados en Etherscan
 
 -totalDepositedPerToken(MockUSDC) → 1000000000000000000
 
@@ -116,7 +116,7 @@ Transacción confirmada sin pérdida de fondos de usuario.
 
 -rescueETH() → Ejecución confirmada (block 9615136)
 
-<h2 align="center">🔗 Contratos Verificados</h2>
+🔗 Contratos Verificados
 
 | Contrato                   | Red     | Dirección                                                                                                                                                          |
 | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -125,19 +125,20 @@ Transacción confirmada sin pérdida de fondos de usuario.
 | **MockDAI**                | Sepolia | [https://sepolia.etherscan.io/address/0xbBf03149d20B205000c048308CF2d17c2341BfF7](https://sepolia.etherscan.io/address/0xbBf03149d20B205000c048308CF2d17c2341BfF7) |
 
 
-<h2 align="center">🧱 Decisiones Técnicas</h2>
+🧱 Decisiones Técnicas
 
-Uso de AccessControl (OpenZeppelin) para gestionar roles.
+.Uso de AccessControl (OpenZeppelin) para gestionar roles.
 
-Seguridad reforzada con ReentrancyGuard.
+.Seguridad reforzada con ReentrancyGuard.
 
-Interacción con oráculo Chainlink ETH/USD.
+.Interacción con oráculo Chainlink ETH/USD.
 
-Modularidad en las funciones de depósito, retiro y rescate.
+.Modularidad en las funciones de depósito, retiro y rescate.
 
-Gas optimizado y versión EVM Shanghai.
+.Gas optimizado y versión EVM Shanghai.
 
-<h2 align="center">🛠️ Herramientas Utilizadas</h2>
+
+🛠️ Herramientas Utilizadas
 
 Remix IDE (Web3)
 
@@ -149,7 +150,7 @@ OpenZeppelin Contracts 5.x
 
 Chainlink Price Feeds
 
-<h2 align="center">👩‍💻 Autora</h2>
+👩‍💻 Autora
 
 N.K.G.G.
 Full Stack & Blockchain Developer
