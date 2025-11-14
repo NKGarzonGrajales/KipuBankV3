@@ -30,6 +30,7 @@ pragma solidity ^0.8.24;
  *  - address(0) continues to represent native ETH in all mappings and events.
  */
 
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -62,6 +63,8 @@ contract KipuBankV3 is Ownable, AccessControl, ReentrancyGuard {
     error NativeTransferFailed(address to, uint256 amount); // low-level call failed
     error OracleUnavailable(); // price feed not returning a valid price
 
+    error InsufficientLiquidity(address token, uint256 requested, uint256 available); // new
+
     // ---------------------- Storage: balances and caps ----------------------
 
     /**
@@ -92,6 +95,15 @@ contract KipuBankV3 is Ownable, AccessControl, ReentrancyGuard {
 
     event Deposited(address indexed user, address indexed token, uint256 amount);
     event Withdrawn(address indexed user, address indexed token, uint256 amount);
+
+        // swap event added
+        event Swapped(
+        address indexed user,
+        address indexed tokenIn,
+        address indexed tokenOut,
+        uint256 amountIn,
+        uint256 amountOut
+    );   
 
     event CapsUpdated(address indexed token, uint256 bankCap, uint256 withdrawCap);
     event OracleUpdated(address indexed oracle);
@@ -300,6 +312,67 @@ contract KipuBankV3 is Ownable, AccessControl, ReentrancyGuard {
         IERC20(token).safeTransfer(msg.sender, amount);
         emit Withdrawn(msg.sender, token, amount);
     }
+
+        // ---------------------- Simple internal swap (ERC-20 <-> ERC-20) swap function type uniswap----------------------
+
+    /**
+     * @notice Swap between two ERC-20 tokens held inside the vault (e.g. MockDAI <-> MockUSDC).
+     * @dev
+     *  - Uses internal vault balances instead of external transfers.
+     *  - Normalizes token decimals so stablecoins can be swapped 1:1.
+     *  - Checks that the bank has enough liquidity in the output token.
+     *  - Adds optional slippage control via `minAmountOut`.
+     *
+     * This is a simplified AMM-style swap, enough to demonstrate Uniswap-like
+     * behaviour for the module requirements without implementing the full x*y=k curve.
+     */
+    function swapVaultTokens(
+        address tokenIn,
+        address tokenOut,
+        uint256 amountIn,
+        uint256 minAmountOut
+    ) external nonReentrant {
+        if (tokenIn == tokenOut) revert InvalidToken(tokenIn);
+        if (tokenIn == NATIVE || tokenOut == NATIVE) {
+            // For this module we focus on ERC-20 <-> ERC-20 swaps (MockDAI, MockUSDC, etc.)
+            revert InvalidToken(NATIVE);
+        }
+        if (amountIn == 0) revert ZeroAmount();
+
+        // 1) CHECK: user balance in tokenIn
+        uint256 userBalIn = balances[msg.sender][tokenIn];
+        if (userBalIn < amountIn) {
+            revert InsufficientBalance(tokenIn, amountIn, userBalIn);
+        }
+
+        // 2) COMPUTE: normalize amountIn to tokenOut decimals (1:1 rate, stablecoin style)
+        uint8 decimalsIn = IERC20Metadata(tokenIn).decimals();
+        uint8 decimalsOut = IERC20Metadata(tokenOut).decimals();
+
+        uint256 amountOut = normalizeDecimals(amountIn, decimalsIn, decimalsOut);
+
+        // Optional slippage protection (even if rate is 1:1, it is good practice)
+        if (amountOut < minAmountOut) {
+            revert InsufficientLiquidity(tokenOut, minAmountOut, amountOut);
+        }
+
+        // 3) CHECK: bank liquidity in tokenOut (uses the same TVL mapping)
+        uint256 bankLiquidityOut = totalDepositedPerToken[tokenOut];
+        if (bankLiquidityOut < amountOut) {
+            revert InsufficientLiquidity(tokenOut, amountOut, bankLiquidityOut);
+        }
+
+        // 4) EFFECTS — internal accounting only, no external transfers
+        balances[msg.sender][tokenIn] = userBalIn - amountIn;
+        balances[msg.sender][tokenOut] += amountOut;
+
+        totalDepositedPerToken[tokenIn] -= amountIn;
+        totalDepositedPerToken[tokenOut] = bankLiquidityOut - amountOut;
+
+        // 5) EVENT for traceability in Etherscan
+        emit Swapped(msg.sender, tokenIn, tokenOut, amountIn, amountOut);
+    }
+
 
     // ---------------------- Owner (admin) configuration ----------------------
 

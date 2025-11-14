@@ -1,160 +1,134 @@
 💰 KipuBankV3
-<p align="center"> DeFi smart contract simulating a decentralized banking system with deposits, withdrawals, oracle integration, and hierarchical roles.<br> Built in <strong>Solidity 0.8.24</strong> and deployed on <strong>Ethereum Sepolia Testnet</strong>. </p>
+<p align="center"> DeFi smart contract simulating a decentralized banking system with deposits, withdrawals, oracle integration, and hierarchical roles. Built with <strong>Solidity 0.8.24</strong> and deployed on <strong>Sepolia Testnet</strong>. </p>
+
+
 ⚙️ General Description
 
-KipuBankV3 is an upgraded decentralized banking smart contract (DeFi) supporting ETH and ERC20 token deposits/withdrawals, role-based permissions, and secure public verification on Etherscan.
-
-The project was developed using Remix IDE, connected to MetaMask (Sepolia), and tested with multiple accounts to validate roles, limits, balances, price feed behavior, and access-control restrictions.
+KipuBankV3 is an advanced decentralized banking smart contract allowing ETH and ERC20 deposits/withdrawals, role-based permissions, oracle-based limits, and an internal AMM-style token swap.
 
 🧠 Project Objectives
 
-Implement a DeFi contract with hierarchical roles.
+Implement hierarchical roles using AccessControl
 
-Simulate deposits and withdrawals in ETH and ERC20 tokens.
+Enable ETH & ERC20 deposits and withdrawals
 
-Apply security mechanisms such as ReentrancyGuard and AccessControl.
+Add internal AMM-style token swapping
 
-Test interactions between two accounts (admin & user).
+Apply ReentrancyGuard + SafeERC20
 
-Verify the complete contract using Standard JSON Input.
+Verify contract fully using Standard JSON Input
 
 🧩 Deployment Parameters
-| Parameter                | Description                            | Value                                        |
-| ------------------------ | -------------------------------------- | -------------------------------------------- |
-| `_oracle`                | Chainlink ETH/USD price feed (Sepolia) | `0x694AA1769357215DE4FAC081bf1f309aDC325306` |
-| `_bankCapUsedETH`        | Initial bank usage cap (8 decimals)    | `0`                                          |
-| `_initialEthBankCap`     | Global ETH cap (1.55 ETH)              | `1550000000000000000`                        |
-| `_initialEthWithdrawCap` | Max withdrawal per tx (0.02 ETH)       | `20000000000000000`                          |
+
+Parameter	Description	Value
+_oracle	Chainlink ETH/USD	0x694AA1769357215DE4FAC081bf1f309aDC325306
+_bankCapUsedETH	Initial usage	0
+_initialEthBankCap	Global ETH cap	1550000000000000000
+_initialEthWithdrawCap	Per-tx withdrawal limit	20000000000000000
+
 
 ⚙️ Main Functions
+depositETH()
+depositToken(address,uint256)
+withdrawETH(uint256)
+withdrawToken(uint256)
+grantRole()
+hasRole()
+rescueETH()
+rescueERC20()
+swapVaultTokens(...)
 
-depositETH()                          // ETH deposit
-depositToken(address,uint256)         // ERC20 deposit
-withdrawETH(uint256)                  // Withdraw ETH
-withdrawToken(address,uint256)        // Withdraw ERC20
-grantRole(bytes32,address)            // Assign role
-hasRole(bytes32,address)              // Check role
-rescueETH(uint256,address)            // Admin ETH rescue
-rescueERC20(address,uint256,address)  // Admin ERC20 rescue
+👥 Accounts & Roles
+Type	Address	Description
+Account A (Admin / Deployer)	0xEFCD678F3E8Ba831787b6eb41ea8A618674B1dd8	DEFAULT_ADMIN_ROLE
+Account B (Tester)	0xc89edce46B30416268E33fb181616f3f90580d71	BANK_ADMIN_ROLE
 
-🧠 Implemented Roles
-
-DEFAULT_ADMIN_ROLE → Full control of the contract
-
-BANK_ADMIN_ROLE → Deposit & rescue permissions
-
-ORACLE_DECIMALS → Precision parameter (8)
-
-👥 Accounts and Roles Used
-
-| Type                             | Address                                      | Description                 |
-| -------------------------------- | -------------------------------------------- | --------------------------- |
-| **Account A (Admin / Deployer)** | `0xEFCD678F3E8Ba831787b6eb41ea8A618674B1dd8` | Holds `DEFAULT_ADMIN_ROLE`. |
-| **Account B (Tester)**           | `0xc89edce46B30416268E33fb181616f3f90580d71` | Assigned `BANK_ADMIN_ROLE`. |
-
-
-Roles summary:
-
--DEFAULT_ADMIN_ROLE → total access
-
--BANK_ADMIN_ROLE → banking operations manager
-
-| Token        | Address                                      | Purpose                                 |
-| ------------ | -------------------------------------------- | --------------------------------------- |
-| **MockUSDC** | `0xCF27A9f700835895648EA5EfA6914074557c7b80` | ERC20 used for deposit/withdraw tests   |
-| **MockDAI**  | `0xbBf03149d20B205000c048308CF2d17c2341BfF7` | ERC20 compatible with banking functions |
+💵 Mock Tokens
+Token	Address	Description
+MockUSDC	0xCF27A9f700835895648EA5EfA6914074557c7b80	6 decimals
+MockDAI	0xbBf03149d20B205000c048308CF2d17c2341BfF7	18 decimals
 
 🧪 Tests Performed
 🔹 Role Assignment
 
-From Account A, grantRole() assigned BANK_ADMIN_ROLE to Account B.
+grantRole() executed correctly
 
-Confirmed with hasRole() → result: true.
+hasRole() returned true
 
 🔹 Deposits
 
-ETH deposit:
+ETH deposits confirmed
 
-depositETH() executed from Account B
-
-Confirmed on Etherscan
-
-totalDepositedPerToken(token) = 1000000000000000000
-
-ERC20 deposits executed after approve() allowance.
+ERC20 deposits using approve()
 
 🔹 Withdrawals
 
-Account B successfully executed:
+withdrawETH() and withdrawToken() successful
 
-withdrawETH()
+🔹 Admin Rescue
 
-withdrawToken()
+rescueETH() executed successfully on-chain
 
-Balances updated correctly.
 
-🔹 Admin Rescue Tests
+📊 Etherscan Results (On-chain)
 
-Admin executed rescueETH() successfully:
+totalDepositedPerToken(MockUSDC) → 1000000000000000000
 
-No user funds lost
+totalDepositedPerToken(MockDAI) → 1000000000000000000
 
-Etherscan transaction confirmed
+hasRole(BANK_ADMIN_ROLE, B) → true
 
-📊 Etherscan Results
+rescueETH() → Successful (block 9615136)
 
--totalDepositedPerToken(MockUSDC) → 1000000000000000000
+---
 
--totalDepositedPerToken(MockDAI) → 1000000000000000000
+🔄 Internal AMM Swap
 
--hasRole(BANK_ADMIN_ROLE, Account B) → true
+Swap tested:
 
--rescueETH() → Successful execution (block 9615136)
+swapVaultTokens(MockDAI, MockUSDC, 1e18, 0)
+
+
+Results:
+
+DAI → 0
+
+USDC → 5
+
+✔ Decimal handling
+✔ Liquidity validated
+✔ Reentrancy safe
+
+--
 
 🔗 Verified Contracts
+Contract	Network	Address
+KipuBankV3	Sepolia	https://sepolia.etherscan.io/address/0x9db4f934df129e959f9f205f3dd5cd8dcbe86a05
 
-| Contract       | Network | Address                                                                                                                                                            |
-| -------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **KipuBankV3** | Sepolia | [https://sepolia.etherscan.io/address/0xd8d9e6a133981b9789849075c89dbe30a0bf05f1](https://sepolia.etherscan.io/address/0xd8d9e6a133981b9789849075c89dbe30a0bf05f1) |
-| **MockUSDC**   | Sepolia | [https://sepolia.etherscan.io/address/0xCF27A9f700835895648EA5EfA6914074557c7b80](https://sepolia.etherscan.io/address/0xCF27A9f700835895648EA5EfA6914074557c7b80) |
-| **MockDAI**    | Sepolia | [https://sepolia.etherscan.io/address/0xbBf03149d20B205000c048308CF2d17c2341BfF7](https://sepolia.etherscan.io/address/0xbBf03149d20B205000c048308CF2d17c2341BfF7) |
+MockUSDC	Sepolia	https://sepolia.etherscan.io/address/0xCF27A9f700835895648EA5EfA6914074557c7b80
 
+MockDAI	Sepolia	https://sepolia.etherscan.io/address/0xbBf03149d20B205000c048308CF2d17c2341BfF7
+
+---
 
 🧱 Technical Decisions
 
-Access control using OpenZeppelin AccessControl
+AccessControl
 
-Protection against reentrancy using ReentrancyGuard
+ReentrancyGuard
 
-Integration with Chainlink price feed
+AMM swap logic
 
-Modular banking logic
+Chainlink integration
 
-Gas-optimized with Shanghai EVM
+OZ Contracts 5.x
 
-🛠️ Tools Used
-
-Remix IDE
-
-MetaMask (Sepolia)
-
-Etherscan Contract Verification
-
-OpenZeppelin Contracts 5.x
-
-Chainlink Price Feeds
+---
 
 👩‍💻 Author
 
-N.K.G.G.
-Full Stack & Blockchain Developer
-Module 4 – Solidity & DeFi Project
+N.K.G.G. – Full Stack & Blockchain Developer
 
-Verified on Etherscan, tested with two accounts, ERC20 tokens and Chainlink price feed.
-
-<p align="center">
-  <sub>© 2025 N.K.G.G. – KipuBankV3 Project  
-  Developed in Solidity using Remix IDE with public verification on Etherscan.</sub>
-</p>
+<p align="center"> <sub>© 2025 N.K.G.G. – KipuBankV3 Developed in Solidity and publicly verified on Etherscan.</sub> </p>
 
 

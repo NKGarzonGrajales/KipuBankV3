@@ -1,177 +1,207 @@
-<h1 align="center">💰 KipuBankV3</h1>
+💰 KipuBankV3
+<p align="center"> Smart Contract DeFi que simula una banca descentralizada con depósitos, retiros, oráculo y roles avanzados. Desarrollado en **Solidity 0.8.24** y desplegado en **Ethereum Sepolia**. </p>
 
-<p align="center">
-Smart Contract DeFi que simula una banca descentralizada con manejo de depósitos, retiros, oráculo y roles administrativos.  
-Desarrollado en <strong>Solidity 0.8.24</strong> y verificado en la red de pruebas <strong>Ethereum Sepolia</strong>.
-</p>
 
----
 
-<h2 align="center">⚙️ Descripción General</h2>
+⚙️ Descripción General
 
-**KipuBankV3** es un contrato inteligente que representa una versión avanzada de un sistema bancario descentralizado (DeFi).  
-Permite depósitos y retiros en ETH y tokens ERC20 simulados, aplicando control de acceso por roles y verificación pública en Etherscan.
+KipuBankV3 es una versión avanzada de un sistema bancario DeFi que permite manejar ETH y tokens ERC20 dentro de un esquema seguro con:
 
-El proyecto fue implementado en **Remix IDE**, conectado a **MetaMask (Sepolia)**, y probado con múltiples cuentas para validar roles, límites y seguridad.
+Control de acceso basado en Roles (AccessControl).
 
----
+Límites globales y por transacción.
 
-<h2 align="center">🧠 Objetivos del Proyecto</h2>
+Integración con oráculo Chainlink ETH/USD.
 
-- Implementar un contrato DeFi con manejo de **roles jerárquicos**.  
-- Simular **depósitos y retiros** de ETH y tokens ERC20.  
-- Aplicar medidas de seguridad: **ReentrancyGuard** y **AccessControl**.  
-- Probar interacción entre múltiples cuentas (admin y usuario).  
-- Verificar el contrato completo mediante **JSON Standard Input** en Etherscan.
+Soporte multi-token y swap interno estilo AMM.
+
+Verificación pública en Etherscan usando JSON Standard Input.
+
+El proyecto fue desarrollado en Remix IDE, conectado a MetaMask en la red Sepolia, y probado con múltiples cuentas.
 
 ---
 
-<h2 align="center">🧩 Parámetros de Despliegue</h2>
+🧠 Objetivos del Proyecto
 
-| Parámetro | Descripción | Valor |
-|-----------|-------------|--------|
-| `_oracle` | Dirección del oráculo Chainlink ETH/USD (Sepolia) | `0x694AA1769357215DE4FAC081bf1f309aDC325306` |
-| `_bankCapUsedETH` | Cap de uso inicial (en 8 decimales) | `0` |
-| `_initialEthBankCap` | Cap global del banco (1.55 ETH) | `1550000000000000000` |
-| `_initialEthWithdrawCap` | Límite de retiro por transacción (0.02 ETH) | `20000000000000000` |
+Implementar jerarquía de roles administrativos.
+
+Manejar depósitos/retiros en ETH y tokens ERC20.
+
+Añadir módulo de swap interno (estilo Uniswap).
+
+Aplicar seguridad: ReentrancyGuard + SafeERC20.
+
+Verificar el contrato completo en Etherscan.
 
 ---
 
-### ⚙️ **Funciones Principales**
+🧩 Parámetros de Despliegue
 
-```solidity
+| Parámetro                | Descripción                 | Valor                                        |
+| ------------------------ | --------------------------- | -------------------------------------------- |
+| `_oracle`                | Chainlink ETH/USD (Sepolia) | `0x694AA1769357215DE4FAC081bf1f309aDC325306` |
+| `_bankCapUsedETH`        | Cap en USD (8 decimales)    | `0`                                          |
+| `_initialEthBankCap`     | Cap global ETH              | `1550000000000000000`                        |
+| `_initialEthWithdrawCap` | Límite retiro/tx            | `20000000000000000`                          |
+
+---
+
+⚙️ Funciones Principales
+
 depositETH()                          // Depósito en ETH
-depositToken(address,uint256)         // Depósito de tokens ERC20
+depositToken(address,uint256)         // Depósito ERC20
 withdrawETH(uint256)                  // Retiro en ETH
-withdrawToken(address,uint256)        // Retiro de tokens ERC20
+withdrawToken(address,uint256)        // Retiro ERC20
 grantRole(bytes32,address)            // Asignar rol
 hasRole(bytes32,address)              // Verificar rol
-rescueETH(uint256,address)            // Rescate de fondos ETH
-rescueERC20(address,uint256,address)  // Rescate de tokens ERC20
+rescueETH(uint256,address)            // Rescate ETH (admin)
+rescueERC20(address,uint256,address)  // Rescate ERC20 (admin)
+swapVaultTokens(...)                  // Swap interno estilo AMM
 
 ---
 
-🧠 Roles Implementados
-
--DEFAULT_ADMIN_ROLE → Control total del contrato.
-
--BANK_ADMIN_ROLE → Permite depósitos y rescates.
-
--ORACLE_DECIMALS → Parámetro de precisión (8).
-
----
 
 👥 Roles y Cuentas Utilizadas
 
-| Tipo                              | Dirección                                    | Descripción                                                              |
-| --------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------ |
-| **Cuenta A (Admin / Deployer)**   | `0xEFCD678F3E8Ba831787b6eb41ea8A618674B1dd8` | Desplegó el contrato y tiene el rol `DEFAULT_ADMIN_ROLE`.                |
-| **Cuenta B (Usuario autorizado)** | `0xc89edce46B30416268E33fb181616f3f90580d71` | Recibió `BANK_ADMIN_ROLE` para pruebas de depósitos, retiros y rescates. |
+| Tipo                              | Dirección                                    | Descripción                |
+| --------------------------------- | -------------------------------------------- | -------------------------- |
+| **Cuenta A (Admin / Deployer)**   | `0xEFCD678F3E8Ba831787b6eb41ea8A618674B1dd8` | Tiene `DEFAULT_ADMIN_ROLE` |
+| **Cuenta B (Usuario autorizado)** | `0xc89edce46B30416268E33fb181616f3f90580d71` | Recibió `BANK_ADMIN_ROLE`  |
 
----
+
 Roles principales:
 
--DEFAULT_ADMIN_ROLE → Acceso total.
+-DEFAULT_ADMIN_ROLE → Acceso total
 
--BANK_ADMIN_ROLE → Gestión de operaciones del banco.
+-BANK_ADMIN_ROLE → Gestión bancaria
+
 ---
 
 💵 Tokens Mock Vinculados
-| Token        | Dirección                                    | Descripción                                                     |
-| ------------ | -------------------------------------------- | --------------------------------------------------------------- |
-| **MockUSDC** | `0xCF27A9f700835895648EA5EfA6914074557c7b80` | Token ERC20 simulado para pruebas de depósito y retiro.         |
-| **MockDAI**  | `0xbBf03149d20B205000c048308CF2d17c2341BfF7` | Token ERC20 simulado compatible con las funciones del contrato. |
+
+| Token        | Dirección                                    | Descripción           |
+| ------------ | -------------------------------------------- | --------------------- |
+| **MockUSDC** | `0xCF27A9f700835895648EA5EfA6914074557c7b80` | ERC20 de 6 decimales  |
+| **MockDAI**  | `0xbBf03149d20B205000c048308CF2d17c2341BfF7` | ERC20 de 18 decimales |
 
 ---
+
 🧪 Pruebas Realizadas
 
 🔹 Asignación de Roles
 
-.Desde la cuenta A, se ejecutó grantRole() para otorgar BANK_ADMIN_ROLE a la cuenta B.
+grantRole() desde Cuenta A hacia Cuenta B.
 
-.Confirmado con hasRole() → Resultado: true.
+Verificado con hasRole() → true.
 
 🔹 Depósitos
 
-.Se ejecutó depositETH() desde la cuenta B.
+depositETH() desde Cuenta B.
 
-.Resultado visible en Etherscan: transacción confirmada.
-
-.Valor validado con totalDepositedPerToken(address) = 1000000000000000000.
-
-.Se realizaron depósitos con MockDAI y MockUSDC, con allowance previa aprobada.
+Depósitos MockDAI y MockUSDC con approve() previo.
 
 🔹 Retiros
 
-.La cuenta B realizó withdrawETH() y withdrawToken() sin errores.
+withdrawETH() y withdrawToken() ejecutados sin errores.
 
-.Los valores se actualizaron correctamente en el balance del contrato.
+🔹 Funciones de Rescate
 
-🔹 Funciones de rescate (Admin)
-
-.Desde la cuenta A, se probó rescueETH() con éxito.
-
-.Transacción confirmada sin pérdida de fondos de usuario.
+rescueETH() ejecutado desde Cuenta A → éxito.
 
 ---
 
-📊 Resultados en Etherscan
+📊 Resultados en Etherscan (On-chain Results)
 
--totalDepositedPerToken(MockUSDC) → 1000000000000000000
+totalDepositedPerToken(MockUSDC) → 1000000000000000000
 
--totalDepositedPerToken(MockDAI) → 1000000000000000000
+totalDepositedPerToken(MockDAI) → 1000000000000000000
 
--hasRole(BANK_ADMIN_ROLE, cuenta B) → true
+hasRole(BANK_ADMIN_ROLE, cuenta B) → true
 
--rescueETH() → Ejecución confirmada (block 9615136)
+rescueETH() → Confirmado en bloque 9615136
+
+---
+
+🔄 Swap Interno Estilo AMM
+
+Se añadió la función: 
+
+swapVaultTokens(tokenIn, tokenOut, amountIn, minAmountOut)
+
+Prueba realizada:
+
+Saldo previo:
+
+Cuenta B: 1 DAI (18d) y 4 USDC (6d)
+
+Ejecución:
+
+swapVaultTokens(
+  MockDAI,
+  MockUSDC,
+  1e18,
+  0
+)
+
+
+Resultado:
+
+MockDAI → 0
+
+MockUSDC → 5
+
+✔ Manejo correcto de decimales
+✔ Liquidez suficiente
+✔ Protección anti-reentrancia
+✔ Swap AMM funcional
 
 ---
 
 🔗 Contratos Verificados
 
-| Contrato                   | Red     | Dirección                                                                                                                                                          |
-| -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **KipuBankV3 (Principal)** | Sepolia | (https://sepolia.etherscan.io/address/0xd8d9e6a133981b9789849075c89dbe30a0bf05f1) |
-| **MockUSDC**               | Sepolia | (https://sepolia.etherscan.io/address/0xCF27A9f700835895648EA5EfA6914074557c7b80) |
-| **MockDAI**                | Sepolia | (https://sepolia.etherscan.io/address/0xbBf03149d20B205000c048308CF2d17c2341BfF7) |
+| Contrato       | Red     | Dirección                                                                                                                                                          |
+| -------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **KipuBankV3** | Sepolia | [https://sepolia.etherscan.io/address/0x9db4f934df129e959f9f205f3dd5cd8dcbe86a05] |
+| **MockUSDC**   | Sepolia | [https://sepolia.etherscan.io/address/0xCF27A9f700835895648EA5EfA6914074557c7b80] |
+| **MockDAI**    | Sepolia | [https://sepolia.etherscan.io/address/0xbBf03149d20B205000c048308CF2d17c2341BfF7] |
 
 ---
 
-🧱 Decisiones Técnicas
+🧱 Technical Decisions
 
-.Uso de AccessControl (OpenZeppelin) para gestionar roles.
+OpenZeppelin AccessControl
 
-.Seguridad reforzada con ReentrancyGuard.
+SafeERC20 managed transfers
 
-.Interacción con oráculo Chainlink ETH/USD.
+ReentrancyGuard protection
 
-.Modularidad en las funciones de depósito, retiro y rescate.
+Chainlink oracle integration
 
-.Gas optimizado y versión EVM Shanghai.
+AMM-style swap logic
+
+Shanghai EVM
 
 ---
 
-🛠️ Herramientas Utilizadas
+🛠️ Tools Used
 
-Remix IDE (Web3)
+Remix IDE
 
-MetaMask – Red de prueba Sepolia
+MetaMask (Sepolia)
 
-Etherscan Verification (JSON Input)
+Etherscan Verification
 
 OpenZeppelin Contracts 5.x
 
-Chainlink Price Feeds
+Chainlink Feeds
 
----
+----
 
-👩‍💻 Autora
+👩‍💻 Author
 
 N.K.G.G.
 Full Stack & Blockchain Developer
-Proyecto Módulo 4 - Solidity y DeFi
 
-Verificado en Etherscan, probado con dos cuentas, tokens ERC20 y oráculo Chainlink.
+<p align="center"> <sub>© 2025 N.K.G.G. – KipuBankV3 Project. Developed in Solidity with public Etherscan verification.</sub> </p>
 
-<p align="center"> <sub>© 2025 N.K.G.G. – Proyecto KipuBankV3 Desarrollado en Solidity con Remix IDE y verificación pública en Etherscan.</sub> </p> ```
 
