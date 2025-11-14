@@ -4,7 +4,7 @@
 
 ---
 
-##⚙️ Descripción General
+ ⚙️ Descripción General
 
 KipuBankV3 es una versión avanzada de un sistema bancario DeFi que permite manejar ETH y tokens ERC20 dentro de un esquema seguro, con:
 
@@ -22,7 +22,7 @@ Verificación pública en Etherscan (JSON Input)
 
 ---
 
-##🧠 Objetivos del Proyecto
+    🧠 Objetivos del Proyecto
 
 Implementar jerarquía de roles administrativos.
 
@@ -85,22 +85,18 @@ Verificar el contrato completo en Etherscan.
 
 ---
 
-## 🧪 Pruebas Realizadas — Extracto
+## 🧪 Pruebas Realizadas 
 
 🔹 Asignación de Roles
 
-| Prueba                | Resultado                                                 |
-| --------------------- | --------------------------------------------------------- |
-| `grantRole()`         | BANK_ADMIN_ROLE asignado correctamente - ejecutado desde 
-                            Cuenta A hacia Cuenta B.                   |
-| `hasRole()`           | `true` para la Cuenta B                                   |
-| Depósitos ETH & ERC20 | Confirmados en Etherscan - ETH depositado vía depositETH()
-                             desde B.  
-                          Depósitos de MockDAI y MockUSDC realizados con approve() previo.                               |
-| Retiros               | Completados sin errores - -withdrawETH() y withdrawToken()
-                             desde B → éxito.                                  |
-| `rescueETH(Admin)`         | Ejecución confirmada (block 9615136)                      |
-| Swap AMM              | DAI → USDC funcionando, resultados correctos de decimales |
+| Prueba                | Resultado                                                      |
+| --------------------- | -------------------------------------------------------------- |
+| `grantRole()`         | BANK_ADMIN_ROLE asignado correctamente                         |
+| `hasRole()`           | `true` para la Cuenta B                                        |
+| Depósitos ETH & ERC20 | Confirmados en Ethersca                                        |
+| Retiros               | Completados sin errores                                        |
+| `rescueETH(Admin)`    | Ejecución confirmada (block 9615136)                           |
+| Swap AMM              | DAI → USDC funcionando, resultados correctos de decimales      |
 
 
 ---
