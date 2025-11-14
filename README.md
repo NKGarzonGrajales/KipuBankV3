@@ -1,10 +1,10 @@
-                                            💰 KipuBankV3
+                                            ##💰 KipuBankV3
 
 <p align="center"> Smart Contract DeFi que simula una banca descentralizada con depósitos, retiros, oráculo y roles avanzados. Desarrollado en <strong>Solidity 0.8.24</strong> y desplegado en <strong>Ethereum Sepolia</strong>. </p>
 
 ---
 
-⚙️ Descripción General
+##⚙️ Descripción General
 
 KipuBankV3 es una versión avanzada de un sistema bancario DeFi que permite manejar ETH y tokens ERC20 dentro de un esquema seguro, con:
 
@@ -22,7 +22,7 @@ Verificación pública en Etherscan (JSON Input)
 
 ---
 
-🧠 Objetivos del Proyecto
+##🧠 Objetivos del Proyecto
 
 Implementar jerarquía de roles administrativos.
 
@@ -36,66 +36,72 @@ Verificar el contrato completo en Etherscan.
 
 ---
 
-🧩 Parámetros de Despliegue
+## 🧩 Parámetros de Despliegue
 
-Parámetro	Descripción	Valor
-_oracle	Chainlink ETH/USD	0x694AA1769357215DE4FAC081bf1f309aDC325306
-_bankCapUsedETH	Cap inicial	0
-_initialEthBankCap	Cap global ETH	1550000000000000000
-_initialEthWithdrawCap	Máx retiro/tx	20000000000000000
 
----
+| Parámetro                | Descripción                      | Valor                                        |
+| ------------------------ | -------------------------------- | -------------------------------------------- |
+| `_oracle`                | Chainlink ETH/USD (Sepolia)      | `0x694AA1769357215DE4FAC081bf1f309aDC325306` |
+| `_bankCapUsedETH`        | Cap inicial en USD (8 decimales) | `0`                                          |
+| `_initialEthBankCap`     | Cap global ETH                   | `1550000000000000000`                        |
+| `_initialEthWithdrawCap` | Máximo retiro por transacción    | `20000000000000000`                          |
 
-⚙️ Funciones Principales
--depositETH()
--depositToken(address,uint256)
--withdrawETH(uint256)
--withdrawToken(address,uint256)
--grantRole(bytes32,address)
--hasRole(bytes32,address)
--rescueETH(uint256,address)
--rescueERC20(address,uint256,address)
--swapVaultTokens(...)
 
 ---
 
-👥 Roles y Cuentas Utilizadas
+## ⚙️ Funciones Principales
 
-Tipo	Dirección	Descripción
-Cuenta A (Admin / Deployer)	0xEFCD678F3E8Ba831787b6eb41ea8A618674B1dd8	DEFAULT_ADMIN_ROLE
-Cuenta B (Usuario)	0xc89edce46B30416268E33fb181616f3f90580d71	BANK_ADMIN_ROLE
+| Función                                | Descripción             |
+| -------------------------------------- | ----------------------- |
+| `depositETH()`                         | Depósito en ETH         |
+| `depositToken(address,uint256)`        | Depósito ERC20          |
+| `withdrawETH(uint256)`                 | Retiro en ETH           |
+| `withdrawToken(address,uint256)`       | Retiro ERC20            |
+| `grantRole(bytes32,address)`           | Otorga rol              |
+| `hasRole(bytes32,address)`             | Verifica rol            |
+| `rescueETH(uint256,address)`           | Rescate de ETH          |
+| `rescueERC20(address,uint256,address)` | Rescate de tokens ERC20 |
+| `swapVaultTokens(...)`                 | Swap interno estilo AMM |
+
 
 ---
-💵 Tokens Mock Vinculados
 
-Token	Dirección	Descripción
-MockUSDC	0xCF27A9f700835895648EA5EfA6914074557c7b80	ERC20 (6 decimales)
-MockDAI	0xbBf03149d20B205000c048308CF2d17c2341BfF7	ERC20 (18 decimales)
+## 👥 Roles y Cuentas Utilizadas
+
+| Tipo                            | Dirección                                    | Rol / Descripción  |
+| ------------------------------- | -------------------------------------------- | ------------------ |
+| **Cuenta A (Admin / Deployer)** | `0xEFCD678F3E8Ba831787b6eb41ea8A618674B1dd8` | DEFAULT_ADMIN_ROLE |
+| **Cuenta B (Usuario)**          | `0xc89edce46B30416268E33fb181616f3f90580d71` | BANK_ADMIN_ROLE    |
+
+
+---
+## 💵 Tokens Mock Vinculados
+
+| Token        | Dirección                                    | Tipo / Decimales     |
+| ------------ | -------------------------------------------- | -------------------- |
+| **MockUSDC** | `0xCF27A9f700835895648EA5EfA6914074557c7b80` | ERC20 (6 decimales)  |
+| **MockDAI**  | `0xbBf03149d20B205000c048308CF2d17c2341BfF7` | ERC20 (18 decimales) |
+
 
 ---
 
-🧪 Pruebas Realizadas
-
+## 🧪 Pruebas Realizadas — Extracto
 
 🔹 Asignación de Roles
 
--grantRole() ejecutado desde Cuenta A hacia Cuenta B.
+| Prueba                | Resultado                                                 |
+| --------------------- | --------------------------------------------------------- |
+| `grantRole()`         | BANK_ADMIN_ROLE asignado correctamente - ejecutado desde 
+                            Cuenta A hacia Cuenta B.                   |
+| `hasRole()`           | `true` para la Cuenta B                                   |
+| Depósitos ETH & ERC20 | Confirmados en Etherscan - ETH depositado vía depositETH()
+                             desde B.  
+                          Depósitos de MockDAI y MockUSDC realizados con approve() previo.                               |
+| Retiros               | Completados sin errores - -withdrawETH() y withdrawToken()
+                             desde B → éxito.                                  |
+| `rescueETH(Admin)`         | Ejecución confirmada (block 9615136)                      |
+| Swap AMM              | DAI → USDC funcionando, resultados correctos de decimales |
 
--hasRole() verificó resultado true.
-
-🔹 Depósitos
-
--ETH depositado vía depositETH() desde B.
-
--Depósitos de MockDAI y MockUSDC realizados con approve() previo.
-
-🔹 Retiros
-
--withdrawETH() y withdrawToken() desde B → éxito.
-
-🔹 Rescates (Admin)
-
--rescueETH() ejecutado desde A → confirmado en Etherscan.
 
 ---
 

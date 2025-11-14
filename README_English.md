@@ -26,66 +26,62 @@ Verify contract fully using Standard JSON Input
 ---
 
 
-🧩 Deployment Parameters
+## 🧩 Deployment Parameters
 
-Parameter	Description	Value
-_oracle	Chainlink ETH/USD	0x694AA1769357215DE4FAC081bf1f309aDC325306
-_bankCapUsedETH	Initial usage	0
-_initialEthBankCap	Global ETH cap	1550000000000000000
-_initialEthWithdrawCap	Per-tx withdrawal limit	20000000000000000
-
----
-
-⚙️ Main Functions
--depositETH()
--depositToken(address,uint256)
--withdrawETH(uint256)
--withdrawToken(uint256)
--grantRole()
--hasRole()
--rescueETH()
--rescueERC20()
--swapVaultTokens(...)
+| Parameter                | Description                            | Value                                        |
+| ------------------------ | -------------------------------------- | -------------------------------------------- |
+| `_oracle`                | Chainlink ETH/USD price feed (Sepolia) | `0x694AA1769357215DE4FAC081bf1f309aDC325306` |
+| `_bankCapUsedETH`        | Initial USD cap (8 decimals)           | `0`                                          |
+| `_initialEthBankCap`     | Global ETH cap                         | `1550000000000000000`                        |
+| `_initialEthWithdrawCap` | Max withdrawal per transaction         | `20000000000000000`                          |
 
 ---
 
-👥 Accounts & Roles
+## ⚙️ Main Functions
 
-Type	Address	Description
-Account A (Admin / Deployer)	0xEFCD678F3E8Ba831787b6eb41ea8A618674B1dd8	DEFAULT_ADMIN_ROLE
-Account B (Tester)	0xc89edce46B30416268E33fb181616f3f90580d71	BANK_ADMIN_ROLE
+| Function                               | Description             |
+| -------------------------------------- | ----------------------- |
+| `depositETH()`                         | Deposit ETH             |
+| `depositToken(address,uint256)`        | Deposit ERC20           |
+| `withdrawETH(uint256)`                 | Withdraw ETH            |
+| `withdrawToken(address,uint256)`       | Withdraw ERC20          |
+| `grantRole(bytes32,address)`           | Assign role             |
+| `hasRole(bytes32,address)`             | Check role              |
+| `rescueETH(uint256,address)`           | Admin ETH rescue        |
+| `rescueERC20(address,uint256,address)` | Admin ERC20 rescue      |
+| `swapVaultTokens(...)`                 | Internal AMM-style swap |
+
+
+## 👥 Accounts and Roles Used
+
+| Type                           | Address                                      | Role / Description |
+| ------------------------------ | -------------------------------------------- | ------------------ |
+| **Account A (Admin/Deployer)** | `0xEFCD678F3E8Ba831787b6eb41ea8A618674B1dd8` | DEFAULT_ADMIN_ROLE |
+| **Account B (Tester)**         | `0xc89edce46B30416268E33fb181616f3f90580d71` | BANK_ADMIN_ROLE    |
+
 
 ---
 
-💵 Mock Tokens
+## 💵 Mock Tokens Used
 
-Token	Address	Description
-MockUSDC	0xCF27A9f700835895648EA5EfA6914074557c7b80	6 decimals
-MockDAI	0xbBf03149d20B205000c048308CF2d17c2341BfF7	18 decimals
+| Token        | Address                                      | Type / Decimals     |
+| ------------ | -------------------------------------------- | ------------------- |
+| **MockUSDC** | `0xCF27A9f700835895648EA5EfA6914074557c7b80` | ERC20 (6 decimals)  |
+| **MockDAI**  | `0xbBf03149d20B205000c048308CF2d17c2341BfF7` | ERC20 (18 decimals) |
+
 
 ---
 
-🧪 Tests Performed
+🧪 Tests Performed — Summary
 
-🔹 Role Assignment
-
--grantRole() executed correctly
-
--hasRole() returned true
-
-🔹 Deposits
-
--ETH deposits confirmed
-
--ERC20 deposits using approve()
-
-🔹 Withdrawals
-
--withdrawETH() and withdrawToken() successful
-
-🔹 Admin Rescue
-
--rescueETH() executed successfully on-chain
+| Test                 | Result                                            |
+| -------------------- | ------------------------------------------------- |
+| `grantRole()`        | BANK_ADMIN_ROLE assigned successfully             |
+| `hasRole()`          | `true` for Account B                              |
+| ETH & ERC20 Deposits | Confirmed on Etherscan                            |
+| Withdrawals          | Executed successfully                             |
+| `rescueETH()`        | Success (block 9615136)                           |
+| AMM Swap             | DAI → USDC functional, decimals handled correctly |
 
 ---
 
